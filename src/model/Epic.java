@@ -1,3 +1,5 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +47,8 @@ public class Epic extends Task {
         for (Subtask subtask : subtasks) {
             if (!subtask.getStatus().equals(Status.NEW)) {
                 allNew = false;
-            } else if (!subtask.getStatus().equals(Status.DONE)) {
+            }
+            if (!subtask.getStatus().equals(Status.DONE)) {
                 allDone = false;
             }
         }
@@ -58,8 +61,6 @@ public class Epic extends Task {
             setStatus(Status.DONE);
         }
     }
-
-
 
     @Override
     public String toString() {

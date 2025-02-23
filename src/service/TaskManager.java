@@ -1,3 +1,9 @@
+package service;
+
+import model.Epic;
+import model.Subtask;
+import model.Task;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,14 +32,9 @@ public class TaskManager {
     }
 
     public void clearEpics() {
-        for (int epicId : epics.keySet()) {
-            for (Subtask subtask : subtasks.values()) {
-                if (subtask.getEpicId() == epicId) {
-                    subtasks.remove(subtask.getId());
-                }
-            }
-        }
         epics.clear();
+        // получается, если мы удаляем все эпики, то нужно удалить и все сабтаски, которые к ним привязаны
+        subtasks.clear();
     }
 
     public void clearSubtasks() {
@@ -87,7 +88,11 @@ public class TaskManager {
         subtask.setId(currentId);
         currentId++;
         Epic currentEpic = epics.get(subtask.getEpicId());
-        currentEpic.addSubtask(subtask);
+        if (currentEpic != null) {
+            currentEpic.addSubtask(subtask);
+        } else {
+            System.out.println("Эпик для подзадачи указан неверно или не существует.");
+        }
     }
 
     public void updateTask(Task task) {
@@ -96,6 +101,7 @@ public class TaskManager {
 
     public void updateEpic(Epic epic) {
         List<Subtask> epicSubtasks = epics.get(epic.getId()).getSubtasks();
+        // статус эпика обновится в setSubtasks()
         epic.setSubtasks(epicSubtasks);
         epics.put(epic.getId(), epic);
     }
