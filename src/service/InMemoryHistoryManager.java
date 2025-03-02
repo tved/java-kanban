@@ -8,7 +8,7 @@ import java.util.List;
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int HISTORY_SIZE = 10;
 
-    private final List<Task> history = new ArrayList<>();
+    private final List<Task> history = new ArrayList<>(HISTORY_SIZE);
 
     @Override
     public List<Task> getHistory() {
@@ -21,5 +21,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             history.remove(0);
         }
         history.add(task);
+    }
+
+    @Override
+    public void remove(Task task) {
+        history.removeIf(item -> item.equals(task));
     }
 }
