@@ -3,28 +3,74 @@ package service;
 import model.Task;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static final int HISTORY_SIZE = 10;
+    private Node<Task> head;
 
-    private final List<Task> history = new ArrayList<>(HISTORY_SIZE);
+    private Node<Task> tail;
+
+    private final Map<Integer, Node<Task>> history = new HashMap<>();
 
     @Override
     public List<Task> getHistory() {
-        return history;
+        return getTasks();
     }
 
     @Override
     public void add(Task task) {
-        if (history.size() == HISTORY_SIZE) {
-            history.remove(0);
+        if (history.containsKey(task.getId())) {
+            remove(task.getId());
         }
-        history.add(task);
+        linkLast(task);
     }
 
     @Override
-    public void remove(Task task) {
-        history.removeIf(item -> item.equals(task));
+    public void remove(int id) {
+        if (history.containsKey(id)) {
+            Node<Task> nodeToDelete = history.get(id);
+            Node<Task> next = nodeToDelete.next;
+            Node<Task> prev = nodeToDelete.prev;
+
+            if (next == null && prev == null) {
+                head = null;
+                tail = null;
+            } else if (prev == null) {
+                head = next;
+                next.prev = null;
+            } else if (next == null) {
+                tail = prev;
+                prev.next = null;
+            } else {
+                prev.next = next;
+                next.prev = prev;
+            }
+
+            history.remove(id);
+        }
+    }
+
+    public void linkLast(Task task) {
+        final Node<Task> oldTail = tail;
+        final Node<Task> newNode = new Node<>(oldTail, task, null);
+        tail = newNode;
+        if (oldTail == null) {
+            head = newNode;
+        } else {
+            oldTail.next = newNode;
+        }
+        history.put(task.getId(), newNode);
+    }
+
+    public List<Task> getTasks() {
+        List<Task> tasks = new ArrayList<>();
+        Node<Task> current = head;
+        while (current != null) {
+            tasks.add(current.data);
+            current = current.next;
+        }
+        return tasks;
     }
 }

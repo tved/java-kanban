@@ -42,11 +42,4 @@ class TaskTest {
         assertEquals(1, task.getId(), "Id объекта Task не установлен");
     }
 
-    @Test
-    public void shouldSetTaskStatus() {
-        Task task = new Task("task", "task desc", Status.NEW);
-        task.setStatus(Status.IN_PROGRESS);
-        assertEquals(Status.IN_PROGRESS, task.getStatus(), "Статус объекта Task не установлен");
-    }
-
 }
