@@ -11,6 +11,10 @@ public class Epic extends Task {
         this.status = Status.NEW;
     }
 
+    private void setStatus(Status status) {
+        this.status = status;
+    }
+
     public Epic(int id, String name, String description) {
         super(id, name, description);
         this.status = Status.NEW;

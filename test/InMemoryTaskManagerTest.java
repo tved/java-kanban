@@ -55,7 +55,6 @@ public class InMemoryTaskManagerTest {
     public void shouldUpdateTask() {
         Task task = new Task("task 1", "desc 1", Status.NEW);
         taskManager.addTask(task);
-        task.setStatus(Status.DONE);
         Task updatedTask = new Task(1, "task 1", "updated desc", Status.DONE);
         taskManager.updateTask(updatedTask);
         Task updated = taskManager.getTaskById(1);
@@ -229,10 +228,10 @@ public class InMemoryTaskManagerTest {
 
         List<Task> history = taskManager.history.getHistory();
         assertFalse(history.isEmpty(), "История не должна быть пустой.");
-        assertEquals(2, history.size(), "В истории должно быть 2 задачи");
+        assertEquals(1, history.size(), "В истории должна быть 1 задача");
 
-        Task initialTaskInHistory = history.get(0);
-        assertEquals("initial desc", initialTaskInHistory.getDescription(), "История должна хранить предыдущую версию описания");
-        assertEquals(Status.NEW, initialTaskInHistory.getStatus(), "История должна хранить предыдущую версию статуса");
+        Task taskInHistory = history.get(0);
+        assertEquals("updated desc", taskInHistory.getDescription(), "История должна хранить обновленную версию описания");
+        assertEquals(Status.DONE, taskInHistory.getStatus(), "История должна хранить обновленный статус задачи");
     }
 }
