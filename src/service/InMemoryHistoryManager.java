@@ -30,24 +30,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void remove(int id) {
         if (history.containsKey(id)) {
-            Node<Task> nodeToDelete = history.get(id);
-            Node<Task> next = nodeToDelete.next;
-            Node<Task> prev = nodeToDelete.prev;
-
-            if (next == null && prev == null) {
-                head = null;
-                tail = null;
-            } else if (prev == null) {
-                head = next;
-                next.prev = null;
-            } else if (next == null) {
-                tail = prev;
-                prev.next = null;
-            } else {
-                prev.next = next;
-                next.prev = prev;
-            }
-
+            removeNode(history.get(id));
             history.remove(id);
         }
     }
@@ -72,5 +55,24 @@ public class InMemoryHistoryManager implements HistoryManager {
             current = current.next;
         }
         return tasks;
+    }
+
+    public void removeNode(Node<Task> node) {
+        Node<Task> next = node.next;
+        Node<Task> prev = node.prev;
+
+        if (next == null && prev == null) {
+            head = null;
+            tail = null;
+        } else if (prev == null) {
+            head = next;
+            next.prev = null;
+        } else if (next == null) {
+            tail = prev;
+            prev.next = null;
+        } else {
+            prev.next = next;
+            next.prev = prev;
+        }
     }
 }
