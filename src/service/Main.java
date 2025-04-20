@@ -9,7 +9,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        // InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        FileBackedTaskManager taskManager = new FileBackedTaskManager("tracker.csv");
         Task task1 = new Task("task 1", "do sth useful", Status.NEW);
         Task task2 = new Task("task 2", "do sth different", Status.NEW);
         Epic epic1 = new Epic("Epic 1", "do sth");
@@ -41,7 +42,6 @@ public class Main {
         taskManager.getSubtaskById(6);
         taskManager.getSubtaskById(7);
         taskManager.getEpicById(3);
-        taskManager.deleteEpic(epic2);
         System.out.println(taskManager.history.getHistory());
 
     }
