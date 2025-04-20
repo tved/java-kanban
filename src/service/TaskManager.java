@@ -12,7 +12,7 @@ public interface TaskManager {
 
     HashMap<Integer, Epic> getEpics();
 
-    public HashMap<Integer, Subtask> getSubtasks();
+    HashMap<Integer, Subtask> getSubtasks();
 
     void clearTasks();
 
