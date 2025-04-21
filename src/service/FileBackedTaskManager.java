@@ -36,16 +36,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         FileBackedTaskManager manager = new FileBackedTaskManager(file.getPath());
         try (BufferedReader fileReader = new BufferedReader(new FileReader(file))) {
             fileReader.readLine(); // пропускает строку с названием колонок
+            int maxId = 1;
             while (fileReader.ready()) {
                 String line = fileReader.readLine();
                 Task task = manager.fromString(line);
-                if (task instanceof Epic) {
-                    manager.addEpic((Epic) task);
-                } else if (task instanceof Subtask) {
-                    manager.addSubtask((Subtask) task);
-                } else {
-                    manager.addTask(task);
+                if (task.getId() > maxId) {
+                    maxId = task.getId();
                 }
+                if (task instanceof Epic) {
+                    // в предыдущей версии с addTask() получалось, что все id задач перетирались.
+                    // сделала так, чтобы у задач сохранялись изначальные id
+                    manager.epics.put(task.getId(), (Epic) task);
+                } else if (task instanceof Subtask) {
+                    manager.subtasks.put(task.getId(), (Subtask) task);
+                } else {
+                    manager.tasks.put(task.getId(), task);
+                }
+
+                manager.currentId = maxId + 1;
             }
         } catch (IOException e) {
             System.out.println("Произошла ошибка во время чтения файла.");
