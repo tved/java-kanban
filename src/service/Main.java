@@ -5,6 +5,8 @@ import model.Status;
 import model.Subtask;
 import model.Task;
 
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -43,6 +45,19 @@ public class Main {
         taskManager.getSubtaskById(7);
         taskManager.getEpicById(3);
         System.out.println(taskManager.history.getHistory());
+
+        FileBackedTaskManager restored = FileBackedTaskManager.loadFromFile(new File("tracker.csv"));
+        System.out.println("Restored tasks:");
+        for (Task task : restored.getTasks().values()) {
+            System.out.println(task);
+        }
+        for (Epic epic : restored.getEpics().values()) {
+            System.out.println(epic);
+        }
+        for (Subtask subtask : restored.getSubtasks().values()) {
+            System.out.println(subtask);
+        }
+
 
     }
 }
