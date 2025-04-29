@@ -1,8 +1,9 @@
-package test;
-
 import model.Status;
 import model.Task;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,23 +24,22 @@ class TaskTest {
 
     @Test
     public void shouldCreateTaskWithAllFields() {
-        Task task = new Task(1, "task", "task desc", Status.NEW);
+        Task task = new Task(1, "task", "task desc", Status.NEW, Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 5, 13, 0));
         assertEquals(1, task.getId(), "Id объекта Task не установлен");
         assertEquals(Status.NEW, task.getStatus(), "Статус объекта Task не установлен");
     }
 
     @Test
     public void shouldCreateWithoutStatus() {
-        Task task = new Task(1, "task", "task desc", Status.NEW);
+        Task task = new Task(1, "task", "task desc", Status.NEW, Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 5, 13, 0));
         assertEquals(1, task.getId(), "Id объекта Task не установлен");
         assertEquals(Status.NEW, task.getStatus(), "Статус объекта Task не установлен");
     }
 
     @Test
     public void shouldSetTestId() {
-        Task task = new Task("task", "task desc", Status.NEW);
+        Task task = new Task("task", "task desc", Status.NEW, Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 5, 13, 0));
         task.setId(1);
         assertEquals(1, task.getId(), "Id объекта Task не установлен");
     }
-
 }

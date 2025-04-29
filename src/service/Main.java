@@ -6,22 +6,24 @@ import model.Subtask;
 import model.Task;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        // InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        FileBackedTaskManager taskManager = new FileBackedTaskManager("tracker.csv");
-        Task task1 = new Task("task 1", "do sth useful", Status.NEW);
-        Task task2 = new Task("task 2", "do sth different", Status.NEW);
+         InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        //FileBackedTaskManager taskManager = new FileBackedTaskManager("tracker.csv");
+        Task task1 = new Task("task 1", "do sth useful", Status.NEW, Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 1, 12, 0));
+        Task task2 = new Task("task 2", "do sth different", Status.NEW, Duration.ofMinutes(180), LocalDateTime.now());
         Epic epic1 = new Epic("Epic 1", "do sth");
         Epic epic2 = new Epic("Epic 2", "do sth else");
-        Subtask subtask1For1 = new Subtask("subtask1For1", "desc for task", Status.NEW, 3);
-        Subtask subtask2For1 = new Subtask("subtask2For1", "desc for task", Status.NEW, 3);
-        Subtask subtask3For1 = new Subtask("subtask3For1", "desc for task", Status.NEW, 3);
-        Subtask subtask1For2 = new Subtask("subtask1For2", "desc for task", Status.NEW, 4);
-        Subtask subtask2For2 = new Subtask("subtask2For2", "desc for task", Status.NEW, 4);
+        Subtask subtask1For1 = new Subtask("subtask1For1", "desc for task", Status.NEW, 3, Duration.ofMinutes(240), LocalDateTime.of(2025, 5, 5, 13, 0));
+        Subtask subtask2For1 = new Subtask("subtask2For1", "desc for task", Status.NEW, 3, Duration.ofMinutes(240), LocalDateTime.of(2025, 5, 5, 17, 0));
+        Subtask subtask3For1 = new Subtask("subtask3For1", "desc for task", Status.NEW, 3, Duration.ofMinutes(240), LocalDateTime.of(2025, 5, 6, 9, 0));
+        Subtask subtask1For2 = new Subtask("subtask1For2", "desc for task", Status.NEW, 4, Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 5, 11, 0));
+        Subtask subtask2For2 = new Subtask("subtask2For2", "desc for task", Status.NEW, 4, Duration.ofMinutes(180), LocalDateTime.of(2025, 5, 5, 13, 0));
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         taskManager.addEpic(epic1);
@@ -57,7 +59,6 @@ public class Main {
         for (Subtask subtask : restored.getSubtasks().values()) {
             System.out.println(subtask);
         }
-
 
     }
 }
