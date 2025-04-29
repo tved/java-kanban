@@ -45,4 +45,8 @@ public interface TaskManager {
     void deleteSubtask(Subtask subtask);
 
     List<Subtask> getSubtasksInEpic(Epic epic);
+
+    List<Task> getPrioritizedTasks();
+
+    boolean isTaskOverlapping(Task task);
 }

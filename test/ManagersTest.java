@@ -1,5 +1,3 @@
-package test;
-
 import service.TaskManager;
 import service.Managers;
 import service.HistoryManager;
