@@ -96,6 +96,8 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", desc='" + description + '\'' +
                 ", status='" + status + '\'' +
+                ", duration='" + duration + '\'' +
+                ", startTime='" + startTime + '\'' +
                 "\n";
     }
 
