@@ -4,6 +4,7 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -17,10 +18,15 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
     Set<Task> prioritizedTasks = new TreeSet<>((Task t1, Task t2) -> {
-        if (t1.getStartTime().equals(t2.getStartTime())) {
+        LocalDateTime time1 = t1.getStartTime();
+        LocalDateTime time2 = t2.getStartTime();
+        if (time1 == null && time2 == null) {
             return t1.getId() - t2.getId();
         }
-        return t1.getStartTime().compareTo(t2.getStartTime());
+        if (time1 == null) return 1;
+        if (time2 == null) return -1;
+
+        return time1.equals(time2) ? t1.getId() - t2.getId() : time1.compareTo(time2);
     });
 
     @Override

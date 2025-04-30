@@ -53,7 +53,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
     }
 
     @Test
-    public void shouldNotADdOverlappingTasks() {
+    public void shouldNotAddOverlappingTasks() {
         Task task1 = new Task("Task 1", "desc", Status.NEW,
                 Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 5, 13, 0));
         taskManager.addTask(task1);
@@ -64,4 +64,33 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         assertEquals(1, taskManager.getTasks().size(), "Задача с пересечением по времени не должна быть добавлена");
     }
 
+    @Test
+    public void getPrioritizedTasksShouldReturnSortedTasks() {
+        Task task1 = new Task("Task 1", "desc", Status.NEW,
+                Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 5, 13, 0));
+        Task task2 = new Task("Task 2", "desc", Status.NEW,
+                Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 5, 14, 0));
+        Task task3 = new Task("Task 3", "desc", Status.NEW,
+                Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 5, 15, 0));
+
+        taskManager.addTask(task3);
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        List<Task> prioritized = taskManager.getPrioritizedTasks();
+        assertEquals(prioritized, List.of(task1, task2, task3), "Задачи в списке должны быть отсортированы по startTime");
+    }
+    @Test
+    public void tasksWithNullStartTimeShouldNotBePrioritized() {
+        Task task1 = new Task("Task 1", "desc", Status.NEW,
+                Duration.ofMinutes(60), null);
+        Task task2 = new Task("Task 2", "desc", Status.NEW,
+                Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 5, 14, 0));
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        assertEquals(1, taskManager.getPrioritizedTasks().size(), "В списке должна быть только одна задача");
+        Task updatedTask2 = new Task(2,"Task 2", "desc updated", Status.NEW,
+                Duration.ofMinutes(60), null);
+        taskManager.updateTask(updatedTask2);
+        assertEquals(0, taskManager.getPrioritizedTasks().size(), "В списке не должно остаться задач");
+    }
 }
