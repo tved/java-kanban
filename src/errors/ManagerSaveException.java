@@ -1,4 +1,4 @@
-package service;
+package errors;
 
 public class ManagerSaveException extends RuntimeException {
     public ManagerSaveException(final String message, final Throwable cause) {

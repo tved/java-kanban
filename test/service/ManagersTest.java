@@ -1,8 +1,4 @@
-import service.TaskManager;
-import service.Managers;
-import service.HistoryManager;
-import service.InMemoryTaskManager;
-import service.InMemoryHistoryManager;
+package service;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

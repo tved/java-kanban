@@ -1,5 +1,5 @@
-import model.Status;
-import model.Task;
+package model;
+
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
