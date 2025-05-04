@@ -1,19 +1,19 @@
+package service;
+
+import exceptions.NotFoundException;
 import model.Epic;
 import model.Status;
 import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.TaskManager;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
     protected T taskManager;
@@ -87,8 +87,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Task task = new Task("task 1", "desc 1", Status.NEW, Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 5, 13, 0));
         taskManager.addTask(task);
         taskManager.deleteTask(task);
-        Task deletedTask = taskManager.getTaskById(1);
-        assertNull(deletedTask, "Задача должна быть удалена");
+        assertThrows(NotFoundException.class, () -> taskManager.getTaskById(1),
+                "Ожидалось NotFoundException при попытке получить удалённую подзадачу");
+
     }
 
     @Test
@@ -98,10 +99,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Subtask subtask = new Subtask("subtask 1", "desc 1", Status.NEW, 1, Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 5, 13, 0));
         taskManager.addSubtask(subtask);
         taskManager.deleteEpic(epic);
-        Epic deletedEpic = taskManager.getEpicById(1);
-        assertNull(deletedEpic, "Эпик должен быть удалён");
-        Subtask subtaskInDeletedEpic = taskManager.getSubtaskById(2);
-        assertNull(subtaskInDeletedEpic, "Подзадача должна быть удалена при удалении эпика");
+        assertThrows(NotFoundException.class, () -> taskManager.getEpicById(1),
+                "Ожидалось NotFoundException при попытке получить удалённый эпик");
+        assertThrows(NotFoundException.class, () -> taskManager.getSubtaskById(2),
+                "Ожидалось NotFoundException при попытке получить удалённую подзадачу");
     }
 
     @Test
@@ -113,7 +114,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addSubtask(subtask1);
         taskManager.addSubtask(subtask2);
         taskManager.deleteSubtask(subtask1);
-        assertNull(taskManager.getSubtaskById(2), "Удалённая подзадача должна отсутствовать");
+        assertThrows(NotFoundException.class, () -> taskManager.getSubtaskById(2),
+                "Ожидалось NotFoundException при попытке получить удалённую подзадачу");
         Epic epicWithDeletedSubtask = taskManager.getEpicById(1);
         List<Subtask> epicSubtasks = epicWithDeletedSubtask.getSubtasks();
         assertEquals(1, epicSubtasks.size(), "После удаления эпик должен содержать 1 подзадачу");

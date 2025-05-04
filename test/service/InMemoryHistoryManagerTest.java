@@ -1,3 +1,5 @@
+package service;
+
 import model.Task;
 import model.Status;
 import org.junit.jupiter.api.BeforeEach;
