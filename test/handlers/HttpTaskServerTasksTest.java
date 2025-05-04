@@ -59,7 +59,7 @@ public class HttpTaskServerTasksTest {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode(), "Код ответа для GET /tasks должен быть 200");
+        assertEquals(201, response.statusCode(), "Код ответа для GET /tasks должен быть 201");
 
         List<Task> tasks = manager.getTasks().values().stream().toList();
         assertEquals(1, tasks.size(), "Некорректное количество задач");
@@ -187,4 +187,26 @@ public class HttpTaskServerTasksTest {
 
         assertEquals(406, response.statusCode(), "Код ответа для POST /tasks, если задачи пересекаются, должен быть 406");
     }
+
+    @Test
+    public void shouldDeleteAllTasks() throws IOException, InterruptedException {
+        Task task1 = new Task("Task 1", "desc", Status.NEW,
+                Duration.ofMinutes(30), LocalDateTime.of(2025, 5, 1, 10, 0));
+        Task task2 = new Task("Task 2", "desc", Status.DONE,
+                Duration.ofMinutes(60), LocalDateTime.of(2025, 5, 1, 12, 0));
+
+        manager.addTask(task1);
+        manager.addTask(task2);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/tasks"))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode(), "Код ответа для DELETE /tasks должен быть 200");
+        assertTrue(manager.getTasks().isEmpty(), "Список задач должен быть пустым после удаления");
+    }
+
 }

@@ -1,6 +1,6 @@
 package service;
 
-import errors.NotFoundException;
+import exceptions.NotFoundException;
 import model.Epic;
 import model.Status;
 import model.Subtask;

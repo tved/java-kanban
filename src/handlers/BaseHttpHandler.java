@@ -41,9 +41,15 @@ public abstract class BaseHttpHandler implements HttpHandler {
 
     protected abstract void handleRequest(HttpExchange exchange) throws IOException;
 
-    protected void sendText(HttpExchange h, String text) throws IOException {
-        writeResponse(h, gson.toJson(Map.of("message", text)), 200);
+    protected void sendText(HttpExchange h, String text, int responseCode) throws IOException {
+        writeResponse(h, gson.toJson(Map.of("message", text)), responseCode);
     }
+
+    protected void sendText(HttpExchange h, String text) throws IOException {
+        sendText(h, text, 200);
+    }
+
+
 
     protected void sendNotFound(HttpExchange h, String errorText) throws IOException {
         writeResponse(h, gson.toJson(Map.of("error", errorText)), 404);
@@ -104,6 +110,8 @@ public abstract class BaseHttpHandler implements HttpHandler {
                 return Endpoint.GET_TASKS;
             } else if (method.equals("POST")) {
                 return Endpoint.CREATE_TASK;
+            } else if (method.equals("DELETE")) {
+                return Endpoint.DELETE_ALL_TASKS;
             }
         }
         if (parts.length == 3) {
@@ -125,6 +133,8 @@ public abstract class BaseHttpHandler implements HttpHandler {
                 return Endpoint.GET_SUBTASKS;
             } else if (method.equals("POST")) {
                 return Endpoint.CREATE_SUBTASK;
+            } else if (method.equals("DELETE")) {
+                return Endpoint.DELETE_ALL_SUBTASKS;
             }
         }
         if (parts.length == 3) {
@@ -146,6 +156,8 @@ public abstract class BaseHttpHandler implements HttpHandler {
                 return Endpoint.GET_EPICS;
             } else if (method.equals("POST")) {
                 return Endpoint.CREATE_EPIC;
+            } else if (method.equals("DELETE")) {
+                return Endpoint.DELETE_ALL_EPICS;
             }
         }
         if (parts.length == 3) {

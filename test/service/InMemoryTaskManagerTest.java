@@ -1,7 +1,7 @@
 package service;
 
-import errors.NotFoundException;
-import errors.TaskOverlapException;
+import exceptions.NotFoundException;
+import exceptions.TaskOverlapException;
 import model.Epic;
 import model.Subtask;
 import model.Task;

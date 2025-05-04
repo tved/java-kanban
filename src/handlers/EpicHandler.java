@@ -1,8 +1,8 @@
 package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import errors.NotFoundException;
-import errors.TaskOverlapException;
+import exceptions.NotFoundException;
+import exceptions.TaskOverlapException;
 import model.Epic;
 import model.Subtask;
 import service.TaskManager;
@@ -42,6 +42,9 @@ public class EpicHandler extends BaseHttpHandler {
             case DELETE_EPIC:
                 handleDeleteEpic(httpExchange, id);
                 break;
+            case DELETE_ALL_EPICS:
+                handleDeleteAllEpics(httpExchange);
+                break;
             default:
                 writeResponse(httpExchange, "Такого эндпоинта не существует", 404);
         }
@@ -74,7 +77,7 @@ public class EpicHandler extends BaseHttpHandler {
         try {
             Epic newEpic = gson.fromJson(requestBody, Epic.class);
             taskManager.addEpic(newEpic);
-            sendText(httpExchange, "Эпик добавлен");
+            sendText(httpExchange, "Эпик добавлен", 201);
         } catch (TaskOverlapException e) {
             sendHasOverlapping(httpExchange);
         }
@@ -89,5 +92,10 @@ public class EpicHandler extends BaseHttpHandler {
         } catch (NotFoundException e) {
             sendNotFound(httpExchange, e.getMessage());
         }
+    }
+
+    private void handleDeleteAllEpics(HttpExchange httpExchange) throws IOException {
+        taskManager.clearEpics();
+        sendText(httpExchange, "Все эпики удалены");
     }
 }

@@ -5,7 +5,7 @@ import model.Subtask;
 import model.Task;
 import model.Status;
 import org.junit.jupiter.api.Test;
-import errors.ManagerSaveException;
+import exceptions.ManagerSaveException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

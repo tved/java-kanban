@@ -1,8 +1,8 @@
 package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import errors.NotFoundException;
-import errors.TaskOverlapException;
+import exceptions.NotFoundException;
+import exceptions.TaskOverlapException;
 import model.Subtask;
 import service.TaskManager;
 
@@ -41,6 +41,8 @@ public class SubtaskHandler extends BaseHttpHandler {
             case DELETE_SUBTASK:
                 handleDeleteSubtask(httpExchange, id);
                 break;
+            case DELETE_ALL_SUBTASKS:
+                handleDeleteAllSubtasks(httpExchange);
             default:
                 writeResponse(httpExchange, "Такого эндпоинта не существует", 404);
         }
@@ -73,7 +75,7 @@ public class SubtaskHandler extends BaseHttpHandler {
         try {
             Subtask newSubtask = gson.fromJson(requestBody, Subtask.class);
             taskManager.addSubtask(newSubtask);
-            sendText(httpExchange, "Подзадача добавлена");
+            sendText(httpExchange, "Подзадача добавлена", 201);
         } catch (TaskOverlapException e) {
             sendHasOverlapping(httpExchange);
         } catch (NotFoundException e) {
@@ -92,5 +94,10 @@ public class SubtaskHandler extends BaseHttpHandler {
         } catch (NotFoundException e) {
             sendNotFound(httpExchange, e.getMessage());
         }
+    }
+
+    private void handleDeleteAllSubtasks(HttpExchange httpExchange) throws IOException {
+        taskManager.clearSubtasks();
+        sendText(httpExchange, "Все подзадачи удалены");
     }
 }

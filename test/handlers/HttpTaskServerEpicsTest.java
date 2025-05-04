@@ -59,7 +59,7 @@ public class HttpTaskServerEpicsTest {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode(), "Код ответа для POST /epics должен быть 200");
+        assertEquals(201, response.statusCode(), "Код ответа для POST /epics должен быть 201");
         assertEquals(1, manager.getEpics().size(), "Некорректное количество эпиков");
         assertEquals("Epic title", manager.getEpicById(1).getName(), "Некорректное название эпика");
     }
@@ -154,4 +154,30 @@ public class HttpTaskServerEpicsTest {
 
         assertEquals(404, response.statusCode(), "Код ответа для GET /epics/{id}/subtasks если эпик не найден должен быть 404");
     }
+
+    @Test
+    public void shouldDeleteAllEpicsAndSubtasks() throws IOException, InterruptedException {
+        Epic epic = new Epic("Epic 1", "desc");
+        manager.addEpic(epic);
+
+        Subtask subtask1 = new Subtask("Subtask 1", "desc", Status.NEW, 1,
+                Duration.ofMinutes(30), LocalDateTime.of(2025, 5, 1, 10, 0));
+        Subtask subtask2 = new Subtask("Subtask 2", "desc", Status.DONE, 1,
+                Duration.ofMinutes(45), LocalDateTime.of(2025, 5, 1, 12, 0));
+
+        manager.addSubtask(subtask1);
+        manager.addSubtask(subtask2);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/epics"))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode(), "Код ответа для DELETE /epics должен быть 200");
+        assertTrue(manager.getEpics().isEmpty(), "Список эпиков должен быть пустым после удаления");
+        assertTrue(manager.getSubtasks().isEmpty(), "Все подзадачи должны быть удалены");
+    }
+
 }

@@ -1,8 +1,8 @@
 package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import errors.NotFoundException;
-import errors.TaskOverlapException;
+import exceptions.NotFoundException;
+import exceptions.TaskOverlapException;
 import model.Task;
 import service.TaskManager;
 
@@ -41,6 +41,8 @@ public class TaskHandler extends BaseHttpHandler {
             case DELETE_TASK:
                 handleDeleteTask(httpExchange, id);
                 break;
+            case DELETE_ALL_TASKS:
+                handleDeleteAllTasks(httpExchange);
             default:
                 writeResponse(httpExchange, "Такого эндпоинта не существует", 404);
         }
@@ -73,7 +75,7 @@ public class TaskHandler extends BaseHttpHandler {
         try {
             Task newTask = gson.fromJson(requestBody, Task.class);
             taskManager.addTask(newTask);
-            sendText(httpExchange, "Задача добавлена");
+            sendText(httpExchange, "Задача добавлена", 201);
         } catch (TaskOverlapException e) {
             sendHasOverlapping(httpExchange);
         }
@@ -88,5 +90,10 @@ public class TaskHandler extends BaseHttpHandler {
         } catch (TaskOverlapException e) {
             sendHasOverlapping(httpExchange);
         }
+    }
+
+    private void handleDeleteAllTasks(HttpExchange httpExchange) throws IOException {
+       taskManager.clearTasks();
+       sendText(httpExchange, "Все задачи удалены");
     }
 }

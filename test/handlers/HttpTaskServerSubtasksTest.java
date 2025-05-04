@@ -63,7 +63,7 @@ public class HttpTaskServerSubtasksTest {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode(), "Код ответа для POST /subtasks должен быть 200");
+        assertEquals(201, response.statusCode(), "Код ответа для POST /subtasks должен быть 201");
         List<Subtask> subtasks = new ArrayList<>(manager.getSubtasks().values());
         assertEquals(1, subtasks.size(), "Некорректное количество подзадач");
         assertEquals("subtask1For1", subtasks.get(0).getName(), "Некорректное название подзадачи");
@@ -190,4 +190,32 @@ public class HttpTaskServerSubtasksTest {
 
         assertEquals(404, response.statusCode(), "Код ответа для POST /subtasks/{id}, если эпик не найден, должен быть 404");
     }
+
+    @Test
+    public void shouldDeleteAllSubtasks() throws IOException, InterruptedException {
+        Epic epic = new Epic("Epic 1", "desc");
+        manager.addEpic(epic);
+
+        Subtask subtask1 = new Subtask("Subtask 1", "desc", Status.NEW, 1,
+                Duration.ofMinutes(30), LocalDateTime.of(2025, 5, 2, 10, 0));
+        Subtask subtask2 = new Subtask("Subtask 2", "desc", Status.IN_PROGRESS, 1,
+                Duration.ofMinutes(45), LocalDateTime.of(2025, 5, 2, 12, 0));
+
+        manager.addSubtask(subtask1);
+        manager.addSubtask(subtask2);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/subtasks"))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode(), "Код ответа для DELETE /subtasks должен быть 200");
+        assertTrue(manager.getSubtasks().isEmpty(), "Список подзадач должен быть пустым");
+
+        Epic epicOfDeletedSubtasks = manager.getEpicById(1);
+        assertTrue(epicOfDeletedSubtasks.getSubtasks().isEmpty(), "Эпик должен содержать пустой список подзадач");
+    }
+
 }
